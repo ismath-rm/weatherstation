@@ -126,11 +126,13 @@ class GoogleLogin(APIView):
     def post(self, request):
         try:
             token = request.data.get('token')
+            print(token)
             if not token:
                 return Response({'error': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Verify the token with Google
             idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.GOOGLE_CLIENT_ID)
+            print(idinfo) 
 
             if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
                 return Response({'error': 'Invalid token issuer'}, status=status.HTTP_400_BAD_REQUEST)
@@ -185,9 +187,9 @@ class GoogleLogin(APIView):
             print(f"An error occurred: {e}")
 
             # Return a generic error response
-            return Response({"error": "An error occurred while logging in"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": "An error occurred while logging in"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)     
 
-        
+
 
 class UserDetailsView(APIView):
     permission_classes = [IsAuthenticated]

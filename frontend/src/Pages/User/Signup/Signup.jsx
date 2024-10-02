@@ -87,7 +87,7 @@
     const handleGoogleSuccess = async (credentialResponse) => {
       const token = credentialResponse.credential;
       try {
-        const response = await axios.post("google-login", { token });
+        const response = await axios.post("auth/google-login", { token });
 
         if (response.status === 200) {
           const {
@@ -221,7 +221,7 @@
           </button>
 
           <div className="mt-4 flex justify-center">
-            <GoogleOAuthProvider clientId="1085163789320-espoks416amh5iin041qm249ngtbe6bk.apps.googleusercontent.com">
+            <GoogleOAuthProvider clientId="718063435397-dogv0560m9kv5jga6hukl1njmvikpmuc.apps.googleusercontent.com">
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={() => console.log("Google login failed")}

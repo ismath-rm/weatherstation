@@ -6,6 +6,7 @@ import Store from './Redux/Store';
 import 'react-toastify/dist/ReactToastify.css';
 import { Bounce, ToastContainer } from 'react-toastify';
 import UserWrapper from './Wrappers/UserWrapper';
+import AdminWrapper from './Wrappers/AdminWrapper';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
 
         <Routes>
           <Route path='/*' element={<UserWrapper/>}/>
+          <Route path="admin/*" element={<AdminWrapper/>} />
         </Routes>
     </Router>
     

@@ -23,6 +23,7 @@ from user.views import MyRefreshTokenObtainPairView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('auth/', include('user.urls')),
+    path('superadmin/', include('superadmin.urls')),
 
     path('token/',jwt_views.TokenObtainPairView.as_view(), name ='token_obtain_pair'),
     path('token/refresh/',MyRefreshTokenObtainPairView.as_view(),name ='token_refresh'),
