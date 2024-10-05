@@ -135,6 +135,16 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+CORS_ALLOWED_ORIGINS = [
+    'https://weatherapp.backend.footvibe.store',
+    'http://localhost:5173',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://weatherapp.backend.footvibe.store',
+    'http://localhost:5173',
+]
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
