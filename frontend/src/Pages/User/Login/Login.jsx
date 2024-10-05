@@ -15,7 +15,8 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const base_url = "http://127.0.0.1:8000/";
+  // const base_url = "http://127.0.0.1:8000/";
+  const base_url = "https://weatherapp.backend.footvibe.store/";
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
