@@ -51,36 +51,44 @@ const UserManagement = () => {
   };
 
   return (
-    <div className="w-full overflow-auto">
-      <table className="min-w-full bg-white">
+    <div className="relative flex flex-col min-h-screen items-center justify-center bg-gradient-to-br from-purple-300 via-purple-400 to-blue-500">
+      <table className="w-1/2 bg-gray-100">
         <thead>
           <tr>
-            <th className="py-2 px-4 bg-gray-800 text-white text-center">Name</th>
-            <th className="py-2 px-4 bg-gray-800 text-white text-center">Email</th>
-            <th className="py-2 px-4 bg-gray-800 text-white text-center">Status</th>
+            <th className="py-2 px-4 bg-black text-white text-center">Name</th>
+            <th className="py-2 px-4 bg-black text-white text-center">Email</th>
+            <th className="py-2 px-4 bg-black text-white text-center">
+              Status
+            </th>
           </tr>
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id} className="border-b">
-              <td className="py-2 px-4 text-center align-middle">{user.username}</td>
-              <td className="py-2 px-4 text-center align-middle">{user.email}</td>
+            <tr key={user.id} className="border-b border-2 border-gray-300">
+              <td className="py-2 px-4 text-center align-middle">
+                {user.username}
+              </td>
+              <td className="py-2 px-4 text-center align-middle">
+                {user.email}
+              </td>
               <td className="py-2 px-4 text-center align-middle">
                 <button
                   onClick={() => toggleUserStatus(user.id, user.is_active)}
                   className={`p-2 rounded ${
-                    user.is_active ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+                    user.is_active
+                      ? "bg-green-600 text-white"
+                      : "bg-red-600 text-white"
                   }`}
                 >
                   {user.is_active ? (
                     <>
                       <LockOpenIcon className="h-5 w-5 inline" />
-                      {' Active'}
+                      {" Active"}
                     </>
                   ) : (
                     <>
                       <LockIcon className="h-5 w-5 inline" />
-                      {' Blocked'}
+                      {" Blocked"}
                     </>
                   )}
                 </button>

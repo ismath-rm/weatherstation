@@ -21,12 +21,17 @@
     // Handle input changes and validation
     const handleInputChange = (e) => {
       const { id, value } = e.target;
+
       if (id === "username") {
+        // Validate username for only alphabetic characters
+        const alphaRegex = /^[a-zA-Z]+$/;
         setUsername(value.trim());
         setErrors((prevErrors) => ({
           ...prevErrors,
           username:
-            value.trim().length < 3 && value.trim().length > 0
+            !alphaRegex.test(value.trim()) && value.trim().length > 0
+              ? "Username must contain only alphabetic characters"
+              : value.trim().length < 3 && value.trim().length > 0
               ? "Username must be longer than 3 characters"
               : "",
         }));
@@ -41,12 +46,15 @@
               : "",
         }));
       } else if (id === "password") {
+        // Validate password to avoid spaces
         setPassword(value.trim());
         setErrors((prevErrors) => ({
           ...prevErrors,
           password:
             value.trim().length < 4 && value.trim().length > 0
               ? "Password must be longer than 4 characters"
+              : value.includes(" ")
+              ? "Password cannot contain spaces"
               : "",
         }));
       }
@@ -56,11 +64,16 @@
     const handleSubmit = async (e) => {
       e.preventDefault();
       if (errors.username || errors.email || errors.password) return;
-      console.log("Validation errors:", errors); 
+      console.log("Validation errors:", errors);
 
       try {
-        console.log("Sending signup request with data:", { username, email, password });
-        const response = await axios.post("auth/signup/", {  // Include the trailing slash
+        console.log("Sending signup request with data:", {
+          username,
+          email,
+          password,
+        });
+        const response = await axios.post("auth/signup/", {
+          // Include the trailing slash
           username,
           email,
           password,
@@ -77,12 +90,14 @@
       } catch (error) {
         console.error("Signup failed:", error);
         if (error.response && error.response.data) {
-          toast.error(error.response.data.error || "Signup failed", { autoClose: 3000 });
+          toast.error(error.response.data.error || "Signup failed", {
+            autoClose: 3000,
+          });
         } else {
           toast.error("Signup failed", { autoClose: 3000 });
         }
       }
-  };
+    };
 
     const handleGoogleSuccess = async (credentialResponse) => {
       const token = credentialResponse.credential;
@@ -144,7 +159,7 @@
       }
     };
     return (
-      <div className="relative flex flex-col min-h-screen items-center justify-center bg-gradient-to-br from-blue-400 to-green-200">
+      <div className="relative flex flex-col min-h-screen items-center justify-center bg-gradient-to-br from-purple-300 via-purple-400 to-blue-500">
         {/* Add ToastContainer to display toasts */}
         <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6 mt-16 mx-4">
           <div className="text-center mb-4">
@@ -152,95 +167,95 @@
             <p className="font-bold mt-1">Create an account </p>
           </div>
           <form className="space-y-4" onSubmit={handleSubmit}>
-          <div className="space-y-2">
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Username
-            </label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={handleInputChange}
-              placeholder="Enter your username"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-            />
-            {errors.username && (
-              <p className="text-sm text-red-500">{errors.username}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={handleInputChange}
-              placeholder="Enter your email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-            />
-            {errors.email && (
-              <p className="text-sm text-red-500">{errors.email}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={handleInputChange}
-              placeholder="Enter your password"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
-            />
-            {errors.password && (
-              <p className="text-sm text-red-500">{errors.password}</p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            disabled={!!errors.username || !!errors.email || !!errors.password}
-          >
-            Sign Up
-          </button>
-
-          <div className="mt-4 flex justify-center">
-            <GoogleOAuthProvider clientId="718063435397-dogv0560m9kv5jga6hukl1njmvikpmuc.apps.googleusercontent.com">
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => console.log("Google login failed")}
-                className="w-full"
+            <div className="space-y-2">
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Username
+              </label>
+              <input
+                id="username"
+                type="text"
+                value={username}
+                onChange={handleInputChange}
+                placeholder="Enter your username"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
               />
-            </GoogleOAuthProvider>
-          </div>
+              {errors.username && (
+                <p className="text-sm text-red-500">{errors.username}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={handleInputChange}
+                placeholder="Enter your email"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={handleInputChange}
+                placeholder="Enter your password"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-500"
+              />
+              {errors.password && (
+                <p className="text-sm text-red-500">{errors.password}</p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+              disabled={
+                !!errors.username || !!errors.email || !!errors.password
+              }
+            >
+              Sign Up
+            </button>
+
+            <div className="mt-4 flex justify-center">
+              <GoogleOAuthProvider clientId="718063435397-sk7rvsgg27hasooin7dot8u9go608t25.apps.googleusercontent.com">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => console.log("Google login failed")}
+                  className="w-full"
+                />
+              </GoogleOAuthProvider>
+            </div>
           </form>
 
-        <div className="mt-4 text-center text-sm text-gray-500">
-          
+          <div className="mt-4 text-center text-sm text-gray-500">
             Already have an account?{" "}
             <Link to="/" className="text-blue-500 hover:underline">
               Login
             </Link>
-          
+          </div>
+          {/* </div> */}
         </div>
-        {/* </div> */}
-      </div>
       </div>
     );
   };

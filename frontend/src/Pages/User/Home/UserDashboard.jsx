@@ -3,7 +3,6 @@ import axios from "axios";
 import {
   LineChart,
   BarChart,
-  PieChart,
   Line,
   Bar,
   XAxis,
@@ -21,21 +20,23 @@ import {
   faTemperatureHigh,
   faTint,
   faWind,
-} from "@fortawesome/free-solid-svg-icons"; // Import icons
-import { useSelector, useDispatch } from "react-redux";
+  faCloudRain,
+} from "@fortawesome/free-solid-svg-icons";
+import { useDispatch } from "react-redux";
 import { set_user_basic_details } from "../../../Redux/UserDetailsSlice";
-import dayjs from "dayjs"; // For date formatting
+import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
   const [chartType, setChartType] = useState("line");
   const [weatherData, setWeatherData] = useState([]);
   const [todayWeather, setTodayWeather] = useState({});
-  const [hourlyForecast, setHourlyForecast] = useState([]); // For the second table
+  const [hourlyForecast, setHourlyForecast] = useState([]);
   const [locationDetails, setLocationDetails] = useState({
     country: "Unknown",
     city: "Unknown",
   });
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -50,7 +51,7 @@ const UserDashboard = () => {
         is_authenticated: false,
       })
     );
-    navigate("/"); // Redirect to the login page
+    navigate("/");
   };
 
   const API_KEY = "1417d47aefb04546b44122035243009";
@@ -63,8 +64,8 @@ const UserDashboard = () => {
           {
             params: {
               key: API_KEY,
-              q: `${latitude},${longitude}`, // Pass latitude and longitude to get weather data based on user's location
-              days: 14,
+              q: `${latitude},${longitude}`,
+              days: 3,
               aqi: "no",
             },
           }
@@ -88,8 +89,8 @@ const UserDashboard = () => {
           windSpeed: forecast[0].day.maxwind_kph,
           uvIndex: forecast[0].day.uv,
           precipitation: forecast[0].day.totalprecip_mm,
-          icon: forecast[0].day.condition.icon, // Icon for today's weather
-          date: dayjs().format("dddd, DD MMMM"), // Today's date
+          icon: forecast[0].day.condition.icon,
+          date: dayjs().format("dddd, DD MMMM"),
         });
 
         // Extract hourly forecast data for the second table
@@ -128,28 +129,18 @@ const UserDashboard = () => {
   const ICONS = [faTemperatureHigh, faTint, faWind]; // Icons for temperature, humidity, wind
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-purple-300 via-purple-400 to-blue-500 flex flex-col overflow-x-hidden">
       {/* Header */}
-      <header className="bg-blue-600 text-white py-4 px-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Weather Dashboard</h1>
-
+      <header className="bg-transparent text-white py-4 px-6 flex items-center justify-between">
+        <div className="flex-1 flex justify-center">
+          <h1 className="text-black text-2xl md:text-3xl font-bold">
+            Weather Dashboard
+          </h1>
+        </div>
         <div className="flex items-center space-x-4">
-          <div className="relative inline-block">
-            <select
-              className="bg-green-500 text-white px-4 py-2 rounded-lg cursor-pointer focus:outline-none"
-              value={chartType}
-              onChange={(e) => setChartType(e.target.value)}
-            >
-              <option value="line">Line Chart</option>
-              <option value="bar">Bar Chart</option>
-              <option value="pie">Pie Chart</option>
-            </select>
-          </div>
-
-          {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full"
+            className="bg-black text-white p-2 rounded-full"
             aria-label="Logout"
           >
             <FontAwesomeIcon icon={faSignOutAlt} />
@@ -157,113 +148,127 @@ const UserDashboard = () => {
         </div>
       </header>
 
-      <div className="text-center mt-2">
-        <h3 className="text-xl font-semi-bold">
-          Weather Forecast For The Next 14 Days :
-        </h3>
-      </div>
-
       {/* Main content */}
-      <main className="flex-grow p-8 bg-white shadow-lg rounded-lg mt-4 mx-6">
-        <h2 className="text-xl font-semibold mb-6 text-gray-700">
-          {chartType.charAt(0).toUpperCase() + chartType.slice(1)} Chart
-        </h2>
+      <div class="flex flex-col items-center justify-center w-full text-gray-700 p-4 md:p-10 bg-gradient-to-br from-purple-300 via-purple-400 to-blue-500">
+        {/* Weather Card */}
+        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl bg-white p-6 rounded-xl ring-8 ring-white ring-opacity-40 mb-4 md:mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex flex-col text-center md:text-left">
+              <span className="text-5xl md:text-6xl font-bold">
+                {todayWeather.temperature}°C
+              </span>
+              <span className="font-semibold mt-1 text-gray-500">
+                {locationDetails.city}, {locationDetails.country}
+              </span>
+              <span className="font-semibold mt-1 text-gray-500">
+                {todayWeather.condition}
+              </span>
+              <span className="font-semibold mt-1 text-gray-500">
+                {todayWeather.date}
+              </span>{" "}
+              {/* Today's Date */}
+            </div>
+            <img
+              src={todayWeather.icon}
+              alt="Weather Icon"
+              className="h-20 w-20 md:h-24 md:w-24"
+            />
+          </div>
+        </div>
 
-        {/* Line Chart */}
-        {chartType === "line" && weatherData.length > 0 && (
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={weatherData}>
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="avgTemp"
-                stroke="#8884d8"
-                name="Temperature (°C)"
-              />
-              <Line
-                type="monotone"
-                dataKey="avgHumidity"
-                stroke="#82ca9d"
-                name="Humidity (%)"
-              />
-              <Line
-                type="monotone"
-                dataKey="maxWindSpeed"
-                stroke="#ffc658"
-                name="Wind Speed (km/h)"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        )}
-
-        {/* Bar Chart */}
-        {chartType === "bar" && weatherData.length > 0 && (
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={weatherData}>
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="avgTemp" fill="#8884d8" name="Temperature (°C)" />
-              <Bar dataKey="avgHumidity" fill="#82ca9d" name="Humidity (%)" />
-              <Bar
-                dataKey="maxWindSpeed"
-                fill="#ffc658"
-                name="Wind Speed (km/h)"
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        )}
-
-        {/* Pie Chart */}
-        {chartType === "pie" && weatherData.length > 0 && (
-          <ResponsiveContainer width="100%" height={400}>
-            <PieChart>
-              <Pie
-                data={[
-                  {
-                    name: "Average Temperature (°C)",
-                    value:
-                      weatherData.reduce((sum, data) => sum + data.avgTemp, 0) /
-                        weatherData.length || 0,
-                  },
-                  {
-                    name: "Average Humidity (%)",
-                    value:
-                      weatherData.reduce(
-                        (sum, data) => sum + data.avgHumidity,
-                        0
-                      ) / weatherData.length || 0,
-                  },
-                  {
-                    name: "Total Wind Speed (km/h)",
-                    value:
-                      weatherData.reduce(
-                        (sum, data) => sum + data.maxWindSpeed,
-                        0
-                      ) || 0,
-                  },
-                ]}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                fill="#8884d8"
-                label
+        {/* Second Table with Hourly Forecast (Dynamic Data from API) */}
+        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl bg-white p-6 rounded-xl ring-8 ring-white ring-opacity-40 mb-4 md:mb-8">
+          <div className="flex flex-col md:flex-row justify-between">
+            {hourlyForecast.map((data, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center mb-2 md:mb-0"
               >
-                {COLORS.map((color, index) => (
-                  <Cell key={`cell-${index}`} fill={color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
+                <span className="font-semibold text-lg">{data.temp}°C</span>
+                <span className="font-semibold mt-1 text-sm">{data.time}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Third Table with Weather Forecast Data and Icons */}
+        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl bg-white p-6 rounded-xl ring-8 ring-white ring-opacity-40 mb-4 md:mb-8">
+          {weatherData.map((data, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center p-2 border-b border-gray-200"
+            >
+              <span className="font-semibold w-1/4">{data.date}</span>
+              <FontAwesomeIcon icon={faTemperatureHigh} className="w-1/4" />
+              <span className="w-1/4 font-semibold">{data.avgTemp}°C</span>
+              <FontAwesomeIcon icon={faTint} className="w-1/4" />
+              <span className="w-1/4 font-semibold">{data.avgHumidity}%</span>
+              <FontAwesomeIcon icon={faWind} className="w-1/4" />
+              <span className="w-1/4 font-semibold">
+                {data.maxWindSpeed} km/h
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Chart Section */}
+        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl bg-white p-6 rounded-xl ring-8 ring-white ring-opacity-40 mb-4 md:mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-2 md:mb-4">
+            <h2 className="text-xl md:text-2xl font-bold">
+              Weather Forecast Chart
+            </h2>
+            <div className="flex space-x-1">
+              <button
+                onClick={() => setChartType("line")}
+                className={`p-2 rounded ${
+                  chartType === "line"
+                    ? "bg-black text-white"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+              >
+                Line
+              </button>
+              <button
+                onClick={() => setChartType("bar")}
+                className={`p-2 rounded ${
+                  chartType === "bar"
+                    ? "bg-black text-white"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+              >
+                Bar
+              </button>
+            </div>
+          </div>
+
+          <ResponsiveContainer width="100%" height={300}>
+            {chartType === "line" && (
+              <LineChart data={weatherData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="avgTemp" stroke="#8884d8" />
+                <Line type="monotone" dataKey="avgHumidity" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="maxWindSpeed" stroke="#ffc658" />
+              </LineChart>
+            )}
+            {chartType === "bar" && (
+              <BarChart data={weatherData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="avgTemp" fill="#8884d8" />
+                <Bar dataKey="avgHumidity" fill="#82ca9d" />
+                <Bar dataKey="maxWindSpeed" fill="#ffc658" />
+              </BarChart>
+            )}
           </ResponsiveContainer>
-        )}
-      </main>
+        </div>
+      </div>
     </div>
   );
 };

@@ -29,17 +29,22 @@ const Sidebar = ({ children }) => {
   };
 
   const navLinkClasses = ({ isActive }) =>
-    isActive ? "block p-4 bg-gray-700 text-white flex items-center" : "block p-4 hover:bg-gray-700 text-gray-300 flex items-center";
+    isActive
+      ? "block p-4 bg-purple-300 text-black flex items-center transition-colors duration-200" // Active link styles
+      : "block p-4 text-white flex items-center transition-colors duration-200"; // No hover effect
+
 
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full bg-gray-800 text-white flex flex-col transition-transform duration-300 ${isSidebarOpen ? 'w-64 translate-x-0' : 'w-16 -translate-x-64'}`}
+        className={`fixed top-0 left-0 h-full bg-black text-white flex flex-col transition-transform duration-300 ${
+          isSidebarOpen ? "w-64 translate-x-0" : "w-16 -translate-x-64"
+        }`}
       >
         {/* Admin Panel title */}
         <div className="flex justify-between items-center p-4 text-2xl font-bold transition-opacity duration-300">
-          <span className={`${isSidebarOpen ? 'opacity-100' : 'opacity-0'}`}>
+          <span className={`${isSidebarOpen ? "opacity-100" : "opacity-0"}`}>
             Admin Panel
           </span>
           {/* Toggle button when sidebar is open */}
@@ -58,19 +63,28 @@ const Sidebar = ({ children }) => {
             <li>
               <NavLink to="/admin/dashboard" className={navLinkClasses}>
                 <FontAwesomeIcon icon={faTachometerAlt} className="mr-3" />
-                <span className={`${isSidebarOpen ? 'inline' : 'hidden'}`}>Dashboard</span>
+                <span className={`${isSidebarOpen ? "inline" : "hidden"}`}>
+                  Dashboard
+                </span>
               </NavLink>
             </li>
             <li>
               <NavLink to="/admin/user-management" className={navLinkClasses}>
                 <FontAwesomeIcon icon={faUsers} className="mr-3" />
-                <span className={`${isSidebarOpen ? 'inline' : 'hidden'}`}>Users</span>
+                <span className={`${isSidebarOpen ? "inline" : "hidden"}`}>
+                  Users
+                </span>
               </NavLink>
             </li>
             <li>
-              <button onClick={handleLogout} className="block w-full text-left p-4 hover:bg-gray-700 text-gray-300 flex items-center">
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left p-4 hover:bg-gray-700 text-gray-300 flex items-center"
+              >
                 <FontAwesomeIcon icon={faSignOutAlt} className="mr-3" />
-                <span className={`${isSidebarOpen ? 'inline' : 'hidden'}`}>Logout</span>
+                <span className={`${isSidebarOpen ? "inline" : "hidden"}`}>
+                  Logout
+                </span>
               </button>
             </li>
           </ul>
@@ -78,12 +92,16 @@ const Sidebar = ({ children }) => {
       </aside>
 
       {/* Main content */}
-      <main className={`flex-grow bg-white shadow-lg rounded-lg  lg:w-3/4 ${isSidebarOpen ? 'ml-64' : ''}`}>
+      <main
+        className={`flex-grow bg-white shadow-lg rounded-lg  lg:w-3/4 ${
+          isSidebarOpen ? "ml-64" : ""
+        }`}
+      >
         {/* Toggle button when sidebar is closed */}
         {!isSidebarOpen && (
           <button
             onClick={toggleSidebar}
-            className="fixed top-0 left-4 text-white p-4 rounded-full shadow-lg mt-2"
+            className="fixed top-0 left-4 text-black p-4 rounded-full shadow-lg mt-2"
           >
             <FontAwesomeIcon icon={faBars} />
           </button>

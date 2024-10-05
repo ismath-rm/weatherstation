@@ -78,15 +78,6 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
 
 DATABASES = {
     'default': {
@@ -142,47 +133,14 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOW_CREDENTIALS = True
-SECURE_CROSS_ORIGIN_OPENER_POLICY = False
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',
-]
-
-
- 
-# REST_FRAMEWORK = {
-#       "DEFAULT_AUTHENTICATION_CLASSES": (
-#         "rest_framework_simplejwt.authentication.JWTAuthentication",
-#     ),
-# }
-
-
-
-# Add the JWT settings
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days=90),
-#     'ROTATE_REFRESH_TOKENS': True,
-#     'BLACKLIST_AFTER_ROTATION': True,
-#     'ALGORITHM': 'HS256',
-#     'SIGNING_KEY': SECRET_KEY,
-#     'AUTH_HEADER_TYPES': ('Bearer',),
-# }
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+   
 }
 
 from datetime import timedelta
@@ -228,4 +186,4 @@ SIMPLE_JWT = {
 }
 
 
-GOOGLE_CLIENT_ID ="718063435397-dogv0560m9kv5jga6hukl1njmvikpmuc.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID ="718063435397-sk7rvsgg27hasooin7dot8u9go608t25.apps.googleusercontent.com"

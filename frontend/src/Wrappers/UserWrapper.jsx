@@ -1,37 +1,26 @@
-import React, { useState, useEffect } from 'react'
-import {useLocation, Route, Routes } from 'react-router-dom'
-import Login from '../Pages/User/Login/Login'
-import Signup from '../Pages/User/Signup/Signup'
-import Dashboard from '../Pages/User/Home/UserDashboard'
-import UserPrivateRoute from '../PrivateRoutes/UserPrivateRoute'
-import { useDispatch, useSelector } from 'react-redux';
-import axiosInstance from '../Component/Api/Api'
-import { set_user_basic_details } from "../Redux/UserDetailsSlice"
+import React, { useState, useEffect } from "react";
+import { useLocation, Route, Routes, Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { set_user_basic_details } from "../Redux/UserDetailsSlice";
+import axiosInstance from "../Component/Api/Api";
+import Login from "../Pages/User/Login/Login";
+import Signup from "../Pages/User/Signup/Signup";
+import Dashboard from "../Pages/User/Home/UserDashboard";
+import UserPrivateRoute from "../PrivateRoutes/UserPrivateRoute";
 
 const UserWrapper = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const token = localStorage.getItem('access_token');
-  const user_basic_details = useSelector((state) => state.user_basic_details);  
-
-  const [isLoading, setIsLoading] = useState(true);  // Add loading state
+  const token = localStorage.getItem("access_token");
+  const user_basic_details = useSelector((state) => state.user_basic_details);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchUserData = async () => {
-    console.log(`Bearer ${token}`);
     try {
-      const res = await axiosInstance.get('auth/user-details/', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
+      const res = await axiosInstance.get("auth/user-details/", {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(`Bearer ${token}`);
-
-
       const userData = res.data.data;
-      console.log(userData);
-      
       dispatch(
         set_user_basic_details({
           id: userData.id,
@@ -41,36 +30,48 @@ const UserWrapper = () => {
           is_authenticated: userData.is_active,
         })
       );
-      setIsLoading(false);  // Set loading state to false after data is fetched
+      setIsLoading(false);
     } catch (error) {
-      console.log(error);
-      setIsLoading(false);  // Set loading state to false even if there is an error
+      console.error(error);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    // localStorage.clear()
-    if (token) {
-      fetchUserData();  // Fetch user data if token exists
-    } else {
-      setIsLoading(false);  // No token means no need to wait
-    }
-  }, [location.pathname, user_basic_details]);
+    if (token) fetchUserData();
+    else setIsLoading(false);
+  }, [location.pathname]);
 
-  // Show loading indicator or null while fetching user data
-  if (isLoading) {
-    return <div>Loading...</div>;  // You can replace this with a better loading UI
+  if (isLoading) return <div>Loading...</div>;
+
+  // If a superuser is trying to access user routes, redirect to admin dashboard
+  if (user_basic_details.is_superuser) {
+    return <Navigate to="/admin/dashboard" replace />;
   }
 
-
-  
   return (
     <Routes>
-      <Route path='' element = {<Login/>}/>
-      <Route path='signup' element= {<Signup/>} />
-      <Route path="user-dashboard" element={<UserPrivateRoute><Dashboard /></UserPrivateRoute>} />
+      <Route
+        path="/"
+        element={
+          user_basic_details.is_authenticated ? (
+            <Navigate to="/user-dashboard" replace />
+          ) : (
+            <Login />
+          )
+        }
+      />
+      <Route path="/signup" element={<Signup />} />
+      <Route
+        path="/user-dashboard"
+        element={
+          <UserPrivateRoute>
+            <Dashboard />
+          </UserPrivateRoute>
+        }
+      />
     </Routes>
-  )
-}
+  );
+};
 
-export default UserWrapper
+export default UserWrapper;
