@@ -196,4 +196,4 @@ SIMPLE_JWT = {
 }
 
 
-GOOGLE_CLIENT_ID ="718063435397-sk7rvsgg27hasooin7dot8u9go608t25.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID ="718063435397-dogv0560m9kv5jga6hukl1njmvikpmuc.apps.googleusercontent.com"

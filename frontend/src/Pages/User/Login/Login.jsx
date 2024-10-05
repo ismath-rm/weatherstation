@@ -256,7 +256,7 @@ const Login = () => {
 
         {/* Google Login */}
         <div className="mt-4 flex justify-center">
-          <GoogleOAuthProvider clientId="718063435397-sk7rvsgg27hasooin7dot8u9go608t25.apps.googleusercontent.com">
+          <GoogleOAuthProvider clientId="718063435397-dogv0560m9kv5jga6hukl1njmvikpmuc.apps.googleusercontent.com">
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => console.log("Google login failed")}
