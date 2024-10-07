@@ -7,6 +7,7 @@ import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useDispatch } from "react-redux";
 import { set_user_basic_details } from "../../../Redux/UserDetailsSlice";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../../../constants/Constants";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -15,7 +16,7 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const base_url = "http://127.0.0.1:8000/";
+  // const base_url = BASE_URL;
   const base_url = "https://weatherapp.backend.footvibe.store/";
 
   const togglePasswordVisibility = () => {

@@ -93,12 +93,12 @@ class Login(APIView):
 
             # Check if the user exists
             user = authenticate(username=username, password=password)
-
+            print(f'debugging google login {user}uu')
             if user is None:
                 return Response({"error": "Invalid username or password"}, status=status.HTTP_400_BAD_REQUEST)
             
             refresh = RefreshToken.for_user(user)
-       
+            print(refresh)
 
             # Successful authentication
             return Response({
@@ -127,15 +127,20 @@ from datetime import datetime
 class GoogleLogin(APIView):
     def post(self, request):
         try:
+            print(f"Request data: {request.data}")
             token = request.data.get('token')
+            print(f"Received token: {token}")
+
             if not token:
                 return Response({'error': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
+            # Log current server time
+            print(f"Current server time: {datetime.now()}")
 
             # Log current server time
             print(f"Current server time: {datetime.now()}")
 
             # Verify the token with Google
-            idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.GOOGLE_CLIENT_ID, clock_skew_in_seconds=100)
+            idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.GOOGLE_CL2IENT_ID, clock_skew_in_seconds=100)
 
             # Log token issued at and expiration times
             print(f"Token issued at (iat): {idinfo.get('iat')}")
@@ -149,7 +154,7 @@ class GoogleLogin(APIView):
 
             # Check if the user already exists
             user = User.objects.filter(username=email, email=email).first()
-
+            print(f"User found: {user}")
             if user:
                 # User exists, check authentication status
                 is_authenticated = user.is_active
@@ -164,6 +169,7 @@ class GoogleLogin(APIView):
                 if existing_superuser:
                     return Response("This email is in use for specific purpose", status=status.HTTP_400_BAD_REQUEST)
                 else:
+                    print("Creating new user...")
                     user = User.objects.create(username=email, email=email, is_superuser=False)
                     is_authenticated = user.is_active
                     is_superuser = False
@@ -174,6 +180,7 @@ class GoogleLogin(APIView):
             # Return tokens only if the user is authenticated
             if is_authenticated:
                 refresh = RefreshToken.for_user(user)
+                print(f"User created__________________________________________________________________________________________________: {user}")
 
                 return Response({
                     'username': user_name,
@@ -194,7 +201,7 @@ class GoogleLogin(APIView):
             print(f"An error occurred: {e}")
 
             # Return a generic error response
-            return Response({"error": "An error occurred while logging in"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": "An error occurred while logging in {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
 class UserDetailsView(APIView):
