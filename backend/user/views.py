@@ -140,7 +140,7 @@ class GoogleLogin(APIView):
             print(f"Current server time: {datetime.now()}")
 
             # Verify the token with Google
-            idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.GOOGLE_CL2IENT_ID, clock_skew_in_seconds=100)
+            idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.GOOGLE_CLIENT_ID, clock_skew_in_seconds=100)
 
             # Log token issued at and expiration times
             print(f"Token issued at (iat): {idinfo.get('iat')}")
